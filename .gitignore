@@ -2,4 +2,6 @@ node_modules/
 
 secrets/
 
-process.env
+cache 
+
+processes.env
