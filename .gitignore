@@ -5,3 +5,7 @@ secrets/
 cache 
 
 processes.env
+
+.ds_store
+ios/.ds_store
+android/.ds_store
