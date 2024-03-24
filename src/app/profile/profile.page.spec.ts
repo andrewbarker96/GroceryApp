@@ -1,17 +1,17 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ProfilePage } from './profile.page';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
+import { ProfilePage } from "./profile.page";
 
-describe('ProfilePage', () => {
+describe("ProfilePage", () => {
   let component: ProfilePage;
   let fixture: ComponentFixture<ProfilePage>;
 
-  beforeEach(async(() => {
+  beforeEach(async () => {
     fixture = TestBed.createComponent(ProfilePage);
     component = fixture.componentInstance;
     fixture.detectChanges();
-  }));
+  });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

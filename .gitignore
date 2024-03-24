@@ -2,8 +2,6 @@ node_modules/
 
 secrets/
 
-cache 
-
 processes.env
 
 .DS_Store

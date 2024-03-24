@@ -5,8 +5,32 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
+  <ion-grid class="ion-align-items-center ion-justify-content-center">
+    <ion-row>
+      <ion-col size="6" *ngFor="let grocery of groceryItems">
+        <ion-card class="ion-text-center" style="padding-top: 2em; padding-bottom: 1em;">
+          <img [src]="grocery.image || 'https://via.placeholder.com/150'" />
+          <ion-card-header>
+            <ion-card-title>{{grocery.name}}</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <h3>Price: {{grocery.price}}</h3>
+            <ion-item>
+              <ion-input class="ion-text-right"label="Quantity" type="number" maxlength="2" [(ngModel)]="grocery.quantity"></ion-input>
+            </ion-item>
+            <ion-button shape='round' (click)="addToCart(grocery)">Add to Cart</ion-button>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<!-- Old Layout -->
+<!-- <ion-content [fullscreen]="true">
+  <ion-header [translucent]="true"></ion-header>
   <h1>Grocery List</h1>
-  <ion-list>
+  <ion-list [inset]="true">
     <ion-item *ngFor="let item of groceriesList">
       {{ item.name }} - ${{ item.price }},  Quantity: {{ item.quantity }} = ${{ item.total }}
     </ion-item>
@@ -14,4 +38,4 @@
       Cart Total: {{ groceriesTotal | currency }}
     </ion-item>
   </ion-list>
-</ion-content>
+</ion-content> -->
