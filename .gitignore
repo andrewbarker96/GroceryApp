@@ -5,3 +5,5 @@ secrets/
 cache 
 
 processes.env
+
+.DS_Store
