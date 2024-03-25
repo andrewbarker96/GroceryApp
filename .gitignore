@@ -1,4 +1,4 @@
-node_modules/
+
 
 secrets/
 
@@ -10,5 +10,9 @@ app/.DS_Store/
 android/.DS_Store/
 ios/.DS_Store/
 
-.angular/cache/17.3.0/babel-webpack/
+node_modules/
+dist/
+.angular/cache/
+webpack.config.js
+
 
