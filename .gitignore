@@ -1,8 +1,8 @@
 
 
-secrets/
 
-processes.env
+DB_Credentials.js
+.env
 
 .DS_Store
 src/.DS_Store/

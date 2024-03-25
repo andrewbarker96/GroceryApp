@@ -1,26 +1,57 @@
-import { db_uri } from './secrets/DB_Credentials.js';
-import { MongoClient, ServerApiVersion } from "mongodb";
+import { MongoClient } from "mongodb";
+import dotenv from 'dotenv';
+dotenv.config();
+
+const db_username = process.env.DB_USERNAME;
+const db_password = process.env.DB_PASSWORD;
+const db_host = process.env.DB_HOST;
+const db_cluster = process.env.DB_CLUSTER;
+
+const db_uri = `mongodb+srv://${db_username}:${db_password}@${db_host}/?retryWrites=true&w=majority&appName=${db_cluster}`;
+
 const uri = db_uri;
 
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-
-async function run() {
+// Function to fetch grocery items from MongoDB
+async function fetchGroceryItems() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
-    // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
+      // Connect to MongoDB
+      const client = new MongoClient(uri);
+      await client.connect();
+      console.log('Connected to MongoDB');
+
+      // Access the groceryDB database and the groceries collection
+      const grocery_collection = client.db('groceryDB').collection('groceries');
+
+      // Get all grocery items
+      const cursor = grocery_collection.find();
+      const groceryItems = await cursor.toArray();
+
+      // Close the connection
+      await client.close();
+
+      return groceryItems;
+
+      // Handle errors
+    } catch (error) {
+      console.error('Error fetching grocery items from MongoDB:', error);
+      throw error;
   }
 }
-run().catch(console.dir);
+
+async function main() {
+  try {
+    // Call fetchGroceryItems function to fetch grocery items from MongoDB
+    const groceryItems = await fetchGroceryItems();
+    
+    // Log the fetched grocery items
+    console.log('Fetched Grocery Items:', groceryItems);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+// Call the main function to start fetching grocery items
+main();
+
+// Export the fetchGroceryItems function
+export default fetchGroceryItems;
