@@ -5,6 +5,10 @@ secrets/
 processes.env
 
 .DS_Store
+src/.DS_Store/
+app/.DS_Store/
+android/.DS_Store/
+ios/.DS_Store/
 
-.angular/cache
+.angular/cache/17.3.0/babel-webpack/
 
