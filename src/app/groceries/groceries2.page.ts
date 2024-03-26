@@ -20,22 +20,33 @@ interface GroceryItem {
   standalone: true,
   imports: [IonicModule, CommonModule, FormsModule],
 })
+
 export class GroceriesPage implements OnInit {
   groceriesList: Grocery[] = groceries;
   groceriesTotal: number = total;
   groceryItems: GroceryItem[] = []; // Initialize your groceryItems array
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
   ngOnInit() {
-    // Convert your groceriesList to groceryItems
-    this.groceryItems = this.groceriesList.map((grocery) => ({
-      name: grocery.name,
-      price: grocery.price,
-      quantity: 1, // Default quantity
-      total: grocery.price, // Default total
-      image: "", // Default image, replace with actual image path
-    }));
+    this.fetchGroceryItems();
+  }
+
+  fetchGroceryItems() {
+    this.http.get<any[]>("http://localhost:3000/groceryItems").subscribe(
+      (data) => {
+        this.groceryItems = data.map((item) => ({
+          name: item.name,
+          price: item.price,
+          quantity: 1, // Default quantity
+          total: item.price, // Default total
+          image: item.image, // Assuming your MongoDB document contains an 'image' field
+        }));
+      },
+      (error) => {
+        console.error("Error fetching grocery items:", error);
+      }
+    );
   }
 
   addToCart(groceryItem: GroceryItem) {
