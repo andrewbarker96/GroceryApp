@@ -12,7 +12,7 @@ ios/.DS_Store/
 
 node_modules/
 dist/
-.angular/cache/17.3.0/babel-webpack/
+.angular/cache/17.3.0/
 webpack.config.js
 
 src/www
