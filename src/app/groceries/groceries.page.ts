@@ -3,7 +3,6 @@ import { CommonModule } from "@angular/common";
 import { FormsModule } from "@angular/forms";
 import { IonicModule } from "@ionic/angular";
 import { Grocery, groceries, total } from "./grocery";
-import { HttpClient } from "@angular/common/http";
 
 interface GroceryItem {
   name: string;
@@ -28,7 +27,6 @@ export class GroceriesPage implements OnInit {
   constructor() {}
 
   ngOnInit() {
-    // Convert your groceriesList to groceryItems
     this.groceryItems = this.groceriesList.map((grocery) => ({
       name: grocery.name,
       price: grocery.price,
@@ -39,6 +37,42 @@ export class GroceriesPage implements OnInit {
   }
 
   addToCart(groceryItem: GroceryItem) {
-    // Implement your add to cart logic here
+    const item = this.groceryItems.find(
+      (item) => item.name === groceryItem.name
+    );
+    if (item) {
+      item.quantity += 1;
+      item.total = item.price * item.quantity;
+    } else {
+      this.groceryItems.push({
+        ...groceryItem,
+        quantity: 1,
+        total: groceryItem.price,
+        image: `assets/${groceryItem.name.toLowerCase().replace(" ", "-")}.jpg`,
+      });
+    }
+    this.groceriesTotal += groceryItem.price;
   }
+
+  removeFromCart(groceryItem: GroceryItem) {
+    const item = this.groceryItems.find(
+      (item) => item.name === groceryItem.name
+    );
+    if (item) {
+      item.quantity -= 1;
+      item.total = item.price * item.quantity;
+      this.groceriesTotal -= groceryItem.price;
+    }
+  }
+
+  getCartTotal() {
+    return this.groceryItems.reduce((total, item) => total + item.total, 0);
+  }
+
+  clearCart() {
+    this.groceryItems = [];
+    this.groceriesTotal = 0;
+  }
+
+  checkout() {}
 }

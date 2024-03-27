@@ -2,14 +2,9 @@ import { MongoClient, ServerApiVersion } from "mongodb";
 import dotenv from 'dotenv';
 dotenv.config();
 
-const db_username = process.env.DB_USERNAME;
-const db_password = process.env.DB_PASSWORD;
-const db_host = process.env.DB_HOST;
-const db_cluster = process.env.DB_CLUSTER;
+const db_uri = process.env.DB_URI;
 
-export const db_uri = `mongodb+srv://${db_username}:${db_password}@${db_host}/?retryWrites=true&w=majority&appName=${db_cluster}`;
-
-class MongoConnection {
+export default class MongoConnection {
   uri = db_uri;
 
   constructor() {
@@ -56,6 +51,40 @@ class MongoConnection {
       throw error;
     }
   }
+
+  async addGroceryItem(item) {
+    try {
+        await this.client.connect();
+        console.log('Connected to MongoDB');
+
+        const db = this.client.db('groceryDB');
+        const groceries = db.collection('groceries');
+
+        const filter = {name: item.name};
+
+        const update = {
+            $set: {
+                name: item.name,
+                price: item.price,
+                image: item.image
+            },
+        };
+
+        const options = { upsert: true };
+        const result = await groceries.updateOne(filter, update, options);
+
+        if (result.upsertedCount === 1) {
+            console.log(`Inserted item ${item.name}`);
+        } else{
+            console.log(`Updated item ${item.name}`);
+        }
+
+        await this.client.close();
+    } catch (error) {
+        console.error('Error inserting item:', error);
+        throw error;
+    }
+}
   
   async getUsers(){
     try {
@@ -72,8 +101,6 @@ class MongoConnection {
   }
 }
 
-export default MongoConnection;
-
 async function run() {
   try {
     const mongoConnection = new MongoConnection();
@@ -85,7 +112,8 @@ async function run() {
     console.log('Users:', users);
 
     await mongoConnection.close();
-  } catch (error) {
+  } 
+  catch (error) {
     console.error('Error:', error);
   }
 }
