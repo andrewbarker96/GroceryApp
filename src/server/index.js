@@ -1,5 +1,6 @@
-import express from 'express';
-import fetchGroceryItems from './fetchGroceries.js';
+const express = require('express');
+const { fetchGroceryItems } = require('./DB_Connection');
+const { Groceries } = require('./DB_GroceryInsert');
 
 const app = express();
 const port = 3000;
