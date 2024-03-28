@@ -1,8 +1,7 @@
 import { Component, OnInit } from "@angular/core";
-import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { Grocery, groceries } from "./grocery";
+import { CartService } from "../cart.service";
 import { IonicModule } from "@ionic/angular";
-import { Grocery, groceries, total } from "./grocery";
 
 interface GroceryItem {
   name: string;
@@ -16,15 +15,12 @@ interface GroceryItem {
   selector: "app-groceries",
   templateUrl: "./groceries.page.html",
   styleUrls: ["./groceries.page.scss"],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
 })
 export class GroceriesPage implements OnInit {
   groceriesList: Grocery[] = groceries;
-  groceriesTotal: number = total;
   groceryItems: GroceryItem[] = []; // Initialize your groceryItems array
 
-  constructor() {}
+  constructor(private cartService: CartService) {}
 
   ngOnInit() {
     this.groceryItems = this.groceriesList.map((grocery) => ({
@@ -32,46 +28,24 @@ export class GroceriesPage implements OnInit {
       price: grocery.price,
       quantity: 1, // Default quantity
       total: grocery.price, // Default total
-      image: "", // Default image, replace with actual image path
+      image: "",
     }));
   }
 
   addToCart(groceryItem: GroceryItem) {
-    const item = this.groceryItems.find(
-      (item) => item.name === groceryItem.name
-    );
-    if (item) {
-      item.quantity += 1;
-      item.total = item.price * item.quantity;
-    } else {
-      this.groceryItems.push({
-        ...groceryItem,
-        quantity: 1,
-        total: groceryItem.price,
-        image: `assets/${groceryItem.name.toLowerCase().replace(" ", "-")}.jpg`,
-      });
-    }
-    this.groceriesTotal += groceryItem.price;
+    this.cartService.addToCart(groceryItem);
   }
 
   removeFromCart(groceryItem: GroceryItem) {
-    const item = this.groceryItems.find(
-      (item) => item.name === groceryItem.name
-    );
-    if (item) {
-      item.quantity -= 1;
-      item.total = item.price * item.quantity;
-      this.groceriesTotal -= groceryItem.price;
-    }
+    this.cartService.removeFromCart(groceryItem);
   }
 
   getCartTotal() {
-    return this.groceryItems.reduce((total, item) => total + item.total, 0);
+    return this.cartService.getCartTotal();
   }
 
   clearCart() {
-    this.groceryItems = [];
-    this.groceriesTotal = 0;
+    this.cartService.clearCart();
   }
 
   checkout() {}

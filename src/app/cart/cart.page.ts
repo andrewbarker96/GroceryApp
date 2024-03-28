@@ -1,32 +1,39 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonicModule } from '@ionic/angular';
-import { Grocery, groceries } from '../groceries/grocery'; // Import Grocery and groceries
+import { Component, OnInit } from "@angular/core";
+import { Observable } from "rxjs";
+import { CartService } from "../cart.service";
+import { IonicModule } from "@ionic/angular";
+
+interface GroceryItem {
+  name: string;
+  price: number;
+  quantity: number;
+  total: number;
+  image: string;
+}
 
 @Component({
-  selector: 'app-cart',
-  templateUrl: './cart.page.html',
-  styleUrls: ['./cart.page.scss'],
-  standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule]
+  selector: "app-cart",
+  templateUrl: "./cart.page.html",
+  styleUrls: ["./cart.page.scss"],
 })
 export class CartPage implements OnInit {
-  cartItems: Grocery[] = groceries; // Use groceries array as cartItems
-  totalPrice: number = 0; // Initialize totalPrice
+  cartItems$: Observable<GroceryItem[]> = new Observable<GroceryItem[]>();
 
-  constructor() { }
+  constructor(private cartService: CartService) {}
 
   ngOnInit() {
-    // Calculate total price
-    this.totalPrice = this.cartItems.reduce((total, item) => total + item.total, 0);
+    this.cartItems$ = this.cartService.getCartItems();
   }
 
-  removeFromCart(index: number) {
-    // Remove item from cart
-    this.cartItems.splice(index, 1);
+  removeFromCart(groceryItem: GroceryItem) {
+    this.cartService.removeFromCart(groceryItem);
+  }
 
-    // Recalculate total price
-    this.totalPrice = this.cartItems.reduce((total, item) => total + item.total, 0);
+  getCartTotal() {
+    return this.cartService.getCartTotal();
+  }
+
+  clearCart() {
+    this.cartService.clearCart();
   }
 }
